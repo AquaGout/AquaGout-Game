@@ -261,19 +261,24 @@ export const Playnow = () => {
   }
   /* Hacer que los botones de pause y sound-on se cambien por
            play y sound-off cuando se hace click sobre ellos */
+  console.log("pause", paused);
   const pauseButton = document.getElementById("pauseButton");
   pauseButton.addEventListener("click", function () {
     if (pauseButton.classList.contains("pauseButton")) {
       pauseButton.classList.remove("pauseButton");
       pauseButton.classList.add("pauseButtonTwo");
-      paused = false;
+      paused = true;
+      console.log("pause click si", paused);
     } else {
       pauseButton.classList.remove("pauseButtonTwo");
       pauseButton.classList.add("pauseButton");
-      paused = true;
+      paused = false;
+      console.log("pause click no", paused);
     }
   });
 
+  // Crear elemento de audio
+  const audio = new Audio("/assets/audio/soundtrack.mp3");
   const soundButton = document.getElementById("soundButton");
   soundButton.addEventListener("click", function () {
     if (soundButton.classList.contains("soundButton")) {
@@ -281,33 +286,29 @@ export const Playnow = () => {
               "url(\"/assets/icons/sound-on.svg\")"; */
       soundButton.classList.remove("soundButton");
       soundButton.classList.add("soundButtonTwo");
+      audio.play(); // Reproducir el audio
     } else {
       /* soundButton.style.backgroundImage =
               "url(\"/assets/icons/sound-off.svg\")"; */
       soundButton.classList.remove("soundButtonTwo");
       soundButton.classList.add("soundButton");
+      audio.pause();
     }
   });
 
-  // Crear elemento de audio
-  const audio = new Audio("/assets/audio/soundtrack.mp3");
+  /*   let soundOn = true;
 
-  // Variable para controlar el estado del sonido
-  let soundOn = true;
-
-  // Función para reproducir o pausar el audio
   function toggleSound() {
     if (soundOn) {
-      audio.pause(); // Pausar el audio
+      audio.pause();
       soundOn = false;
     } else {
-      audio.play(); // Reproducir el audio
+      audio.play();
       soundOn = true;
     }
   }
 
-  // Agregar evento click al botón "soundButton"
-  soundButton.addEventListener("click", toggleSound);
+  soundButton.addEventListener("click", toggleSound); */
 
   const returnButton = document.getElementById("returnButton");
 

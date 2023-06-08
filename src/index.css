@@ -336,7 +336,7 @@ body {
 }
 
 .soundButtonTwo {
-  background-image: url("/assets/icons/sound-off.svg");
+  background-image: url("/assets/icons/sound-on.svg");
   background-color: transparent;
   width: 80px;
   height: 80px;
@@ -347,7 +347,7 @@ body {
 }
 
 .soundButton {
-  background-image: url("/assets/icons/sound-on.svg");
+  background-image: url("/assets/icons/sound-off.svg");
   background-color: transparent;
   width: 80px;
   height: 80px;
