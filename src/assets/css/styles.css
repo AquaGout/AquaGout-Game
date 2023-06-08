@@ -1,0 +1,35 @@
+/* Se importan todos los CSS de cada componente */
+@import url("../../components/Header/Header.css");
+@import url("../../components/Footer/Footer.css");
+@import url("../../components/LandingContent/LandingContent.css");
+@import url("../../components/HowtoPlay/HowtoPlay.css");
+@import url("../../components/Share/Share.css");
+@import url("../../components/PlayNow/PlayNow.css");
+
+/* Fuentes */
+@font-face {
+  src: url("../fonts/Bohemian_Soul.otf") format("truetype");
+  font-family: "Richard Samuels";
+  src: url("../fonts/Richard_Samuels.otf") format("truetype");
+}
+
+/* Se insertan clases o CSS global */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Richard Samuels", sans-serif;
+  font-size: 35px;
+  color: white;
+}
+
+/* body {
+    background: linear-gradient(to bottom, #80c0d6, #180869);
+    height: 100vh;
+}
+ */
+
+/* stylelint-disable indentation */
