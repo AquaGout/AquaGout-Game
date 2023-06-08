@@ -263,29 +263,29 @@ export const Playnow = () => {
            play y sound-off cuando se hace click sobre ellos */
   const pauseButton = document.getElementById("pauseButton");
   pauseButton.addEventListener("click", function () {
-    if (pauseButton.classList.contains("playing")) {
-      pauseButton.style.backgroundImage =
-              "url(\"/assets/icons/pause.svg\")";
-      pauseButton.classList.remove("playing");
+    if (pauseButton.classList.contains("pauseButton")) {
+      pauseButton.classList.remove("pauseButton");
+      pauseButton.classList.add("pauseButtonTwo");
       paused = false;
     } else {
-      pauseButton.style.backgroundImage =
-              "url(\"/assets/icons/play.svg\")";
-      pauseButton.classList.add("playing");
+      pauseButton.classList.remove("pauseButtonTwo");
+      pauseButton.classList.add("pauseButton");
       paused = true;
     }
   });
 
   const soundButton = document.getElementById("soundButton");
   soundButton.addEventListener("click", function () {
-    if (soundButton.classList.contains("playing")) {
-      soundButton.style.backgroundImage =
-              "url(\"/assets/icons/sound-on.svg\")";
-      soundButton.classList.remove("playing");
+    if (soundButton.classList.contains("soundButton")) {
+      /*  soundButton.style.backgroundImage =
+              "url(\"/assets/icons/sound-on.svg\")"; */
+      soundButton.classList.remove("soundButton");
+      soundButton.classList.add("soundButtonTwo");
     } else {
-      soundButton.style.backgroundImage =
-              "url(\"/assets/icons/sound-off.svg\")";
-      soundButton.classList.add("playing");
+      /* soundButton.style.backgroundImage =
+              "url(\"/assets/icons/sound-off.svg\")"; */
+      soundButton.classList.remove("soundButtonTwo");
+      soundButton.classList.add("soundButton");
     }
   });
 
