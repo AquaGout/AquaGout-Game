@@ -265,12 +265,12 @@ export const Playnow = () => {
   pauseButton.addEventListener("click", function () {
     if (pauseButton.classList.contains("playing")) {
       pauseButton.style.backgroundImage =
-              "url(\"../../assets/icons/pause.svg\")";
+              "url(\"/assets/icons/pause.svg\")";
       pauseButton.classList.remove("playing");
       paused = false;
     } else {
       pauseButton.style.backgroundImage =
-              "url(\"../../assets/icons/play.svg\")";
+              "url(\"/assets/icons/play.svg\")";
       pauseButton.classList.add("playing");
       paused = true;
     }
@@ -280,17 +280,17 @@ export const Playnow = () => {
   soundButton.addEventListener("click", function () {
     if (soundButton.classList.contains("playing")) {
       soundButton.style.backgroundImage =
-              "url(\"../../assets/icons/sound-on.svg\")";
+              "url(\"/assets/icons/sound-on.svg\")";
       soundButton.classList.remove("playing");
     } else {
       soundButton.style.backgroundImage =
-              "url(\"../../assets/icons/sound-off.svg\")";
+              "url(\"/assets/icons/sound-off.svg\")";
       soundButton.classList.add("playing");
     }
   });
 
   // Crear elemento de audio
-  const audio = new Audio("../../assets/audio/soundtrack.mp3");
+  const audio = new Audio("/assets/audio/soundtrack.mp3");
 
   // Variable para controlar el estado del sonido
   let soundOn = true;
@@ -312,7 +312,7 @@ export const Playnow = () => {
   const returnButton = document.getElementById("returnButton");
 
   returnButton.addEventListener("click", function () {
-    window.location.href = "../../index.html";
+    location.href = "https://aquagout.github.io/AquaGoat/";
   });
   /* });
  */
