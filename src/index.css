@@ -31,6 +31,12 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  height: 100vh;
+}
+
+.right-rocks img,
+.left-rocks img {
+  height: 100vh;
 }
 
 .middle-area {
@@ -82,6 +88,7 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  height: 100vh;
 }
 
 .bubbles {
@@ -264,26 +271,29 @@ body {
 }
 
 .medusa {
-  width: 134px;
-  height: 134px;
+  width: 88px;
+  height: 118px;
   position: absolute;
 
   /*  bottom: 1px; */
   left: 600px;
   z-index: 1;
   background: url("/assets/images/medusaenemigo134px.png") no-repeat;
+  background-position: bottom;
 }
 
 .pulpo {
-  width: 134px;
-  height: 134px;
+  width: 117px;
+  height: 126px;
   background: url("/assets/images/pulpoenemigo134px.png") no-repeat;
+  background-position: bottom;
 }
 
 .tiburon {
   width: 134px;
-  height: 134px;
+  height: 108px;
   background: url("/assets/images/tiburonenemigo134.png") no-repeat;
+  background-position: bottom;
 }
 /* stylelint-disable selector-id-pattern */
 #returnButton {
@@ -365,6 +375,15 @@ body {
   to {
     background-position-x: -252px;
   }
+}
+
+@keyframes vibration {
+  0% { transform: translate(0); }
+  20% { transform: translate(-4px, -4px); }
+  40% { transform: translate(4px, -4px); }
+  60% { transform: translate(-4px, 4px); }
+  80% { transform: translate(4px, 4px); }
+  100% { transform: translate(0); }
 }
 
 /* stylelint-disable indentation */

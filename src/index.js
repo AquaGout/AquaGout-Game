@@ -1,17 +1,8 @@
 import Swal from "sweetalert2";
 
+/* ---------FUNCION PRINCIPAL ------ */
 export const Playnow = () => {
-  // CARGAR LA RUTA O COMPONENTE
-  /* fetch("./components/PlayNow/PlayNow.html")
-    .then((response) => response.text())
-    .then((htmlPlayNow) => { */
-  // Insertar el contenido del archivo en el elemento con el id "header"
-  /* document.getElementById("content").innerHTML = htmlPlayNow; */
-
-  //* * LOGICA DE EL JUEGO **//
-  //* * GAME LOOP **//
-  //* * ESTA CORREINDO SOBRE LA RUTA MOVER A SCRIPT INDEPENDIENTE **//
-  //* * GAME LOOP **//
+  //* ------LOGICA DE EL JUEGO ------*//
   let time = new Date();
   let deltaTime = 0;
 
@@ -25,16 +16,14 @@ export const Playnow = () => {
     document.addEventListener("DOMContentLoaded", Init);
   }
 
-  // funcion inial para cargar el start del juego y el ciclo de panpalla de movimiento
+  /* ------FUNCION DE INICIO ------- */
   function Init() {
     time = new Date();
-    /* Start(); */
     Loop();
-
     generarPecesFondo();
   }
 
-  // crea el ciclo con delay de tiempo que simula el movimiento de la pantalla
+  /* -----------CICLO DEL JUEGO------------ */
   function Loop() {
     deltaTime = (new Date() - time) / 1000;
     time = new Date();
@@ -43,10 +32,10 @@ export const Playnow = () => {
   }
 
   //* * GAME LOGIC **//
-  /*  let gameOver = document.querySelector(".game-over"); */
+
+  /* -----VARIABLES NECESARIAS ------------ */
   const suelo = document.querySelector(".espacio");
   const contenedor = document.querySelector(".contenedor");
-  /* let textoScore = document.querySelector(".score"); */
   const objeto = document.querySelector(".objeto");
   document.addEventListener("keydown", HandleKeyDown);
   const parado = false;
@@ -56,16 +45,14 @@ export const Playnow = () => {
   const gameVel = 1;
   let velY = 0;
   let objetoMoved = 480;
-
   let tiempoHastaObstaculo = 2;
   const tiempoObstaculoMin = 0.7;
   const tiempoObstaculoMax = 1.8;
-  /* const obstaculoPosY = 16; */
   const obstaculos = [];
   let score = 0;
   let paused = false;
 
-  // aqui cargamos todas las funcionalidades que tiene el juego
+  /* ---CARGA DE FUNCIONES PRINCIPALES OBJETO -- */
   function Update() {
     if (paused) return;
     score += deltaTime;
@@ -78,6 +65,7 @@ export const Playnow = () => {
     MoverObstaculos();
     verificarColisiones();
     RestartBoton();
+    /* vibrarElemento(); */
 
     if (velY) velY -= gravedad * deltaTime;
   }
@@ -341,10 +329,11 @@ export const Playnow = () => {
         /* Lamamos la funcion parar juego */
         PararJuego();
         /* mensaje de alerta en caso de colicion */
+        vibrarRapido();
         Swal.fire({
           title: "¡Game Over!",
           text: "¿Desea volver a jugar o regresar al inicio?",
-          icon: "Error",
+          icon: "error",
           showCancelButton: true,
           confirmButtonText: "Volver a jugar",
           cancelButtonText: "Regresar al inicio"
@@ -361,6 +350,25 @@ export const Playnow = () => {
     }
   }
   /* ------FIN GAME OVER FUNCION ------------ */
+
+  /* --------- FUNCION VIBRAR----------- */
+  /*   function vibrarElemento() {
+    if ("vibrate" in navigator) {
+      objeto.style.animation = "vibration 1s infinite";
+    } else {
+      console.log("El dispositivo no soporta la vibración.");
+    }
+  }
+ */
+  function vibrarRapido() {
+    // Verificar si el navegador es compatible con la API de Vibración
+    if ("vibrate" in navigator) {
+      // Hacer que el elemento vibre con un patrón de vibración más rápido
+      objeto.style.animation = "vibration 0.2s infinite";
+    } else {
+      console.log("El dispositivo no soporta la vibración.");
+    }
+  }
 
   /* PARAR EL JUEGO */
   function PararJuego() {
