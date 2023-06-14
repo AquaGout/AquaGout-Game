@@ -77,6 +77,7 @@ export const Playnow = () => {
     DecidirCrearObstaculos();
     MoverObstaculos();
     verificarColisiones();
+    RestartBoton();
 
     if (velY) velY -= gravedad * deltaTime;
   }
@@ -228,14 +229,6 @@ export const Playnow = () => {
   }
 
   // mas javascript hecho por SARA.
-  // Crear botones de restart, pause y sonido.
-  const restartButton = document.getElementById("restartButton");
-  /*       const pauseButton = document.getElementById("pauseButton");
-        const soundButton = document.getElementById("soundButton"); */
-  // Agregarle la opción de poder clicar encima.
-  restartButton.addEventListener("click", () => {
-    score = 0;
-  });
 
   /*       estan declaradas pero no se utilizan por ahora genera error
         pauseButton.addEventListener("click", pauseGame);
@@ -257,8 +250,34 @@ export const Playnow = () => {
       contenedor.appendChild(pez);
     }
   }
-  /* Hacer que los botones de pause y sound-on se cambien por
-           play y sound-off cuando se hace click sobre ellos */
+
+  /* ----------BOTONES -------------- */
+
+  // BOTON RESTART.
+  function RestartBoton() {
+    const restartButton = document.getElementById("restartButton");
+    restartButton.addEventListener("click", () => {
+      paused = true;
+      Swal.fire({
+        title: "¡El Juego se Reiniciara!",
+        text: "¿Reiniciar Juego?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Reiniciar Juego",
+        cancelButtonText: "Continuar juego"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // El usuario desea volver a jugar
+          location.reload();
+        } else {
+          // Continuar el juego
+          paused = false;
+        }
+      });
+    });
+  }
+
+  // BOTON PAUSE.
   const pauseButton = document.getElementById("pauseButton");
   pauseButton.addEventListener("click", function () {
     if (pauseButton.classList.contains("pauseButton")) {
@@ -272,48 +291,31 @@ export const Playnow = () => {
     }
   });
 
-  // Crear elemento de audio
+  // BOTON AUDIO.
   const audio = new Audio("/assets/audio/soundtrack.mp3");
   const soundButton = document.getElementById("soundButton");
   soundButton.addEventListener("click", function () {
     if (soundButton.classList.contains("soundButton")) {
-      /*  soundButton.style.backgroundImage =
-              "url(\"/assets/icons/sound-on.svg\")"; */
       soundButton.classList.remove("soundButton");
       soundButton.classList.add("soundButtonTwo");
       audio.play(); // Reproducir el audio
     } else {
-      /* soundButton.style.backgroundImage =
-              "url(\"/assets/icons/sound-off.svg\")"; */
       soundButton.classList.remove("soundButtonTwo");
       soundButton.classList.add("soundButton");
       audio.pause();
     }
   });
 
-  /*   let soundOn = true;
-
-  function toggleSound() {
-    if (soundOn) {
-      audio.pause();
-      soundOn = false;
-    } else {
-      audio.play();
-      soundOn = true;
-    }
-  }
-
-  soundButton.addEventListener("click", toggleSound); */
-
+  // BOTON RETURN HOME.
   const returnButton = document.getElementById("returnButton");
 
   returnButton.addEventListener("click", function () {
     location.href = "https://aquagout.github.io/AquaGoat/";
   });
 
-  /*   verificar Colisiones */
-  /*   verificar Colisiones */
-  /*   verificar Colisiones */
+  /* ----------FIN BOTONES -------------- */
+
+  /* ------HAME OVER FUNCION ------------ */
 
   /* Intalar libreria alertas */
   /* npm install sweetalert2 */
@@ -342,22 +344,23 @@ export const Playnow = () => {
         Swal.fire({
           title: "¡Game Over!",
           text: "¿Desea volver a jugar o regresar al inicio?",
-          icon: "warning",
+          icon: "Error",
           showCancelButton: true,
           confirmButtonText: "Volver a jugar",
           cancelButtonText: "Regresar al inicio"
         }).then((result) => {
           if (result.isConfirmed) {
             // El usuario desea volver a jugar
-            // Agrega aquí la lógica correspondiente para reiniciar el juego
+            location.reload();
           } else {
             // El usuario desea regresar al inicio
-            // Agrega aquí la lógica correspondiente para redirigir al usuario al inicio
+            location.href = "https://aquagout.github.io/AquaGoat/";
           }
         });
       }
     }
   }
+  /* ------FIN GAME OVER FUNCION ------------ */
 
   /* PARAR EL JUEGO */
   function PararJuego() {
