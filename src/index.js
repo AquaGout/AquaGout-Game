@@ -1,3 +1,5 @@
+import Swal from "sweetalert2";
+
 export const Playnow = () => {
   // CARGAR LA RUTA O COMPONENTE
   /* fetch("./components/PlayNow/PlayNow.html")
@@ -65,7 +67,6 @@ export const Playnow = () => {
 
   // aqui cargamos todas las funcionalidades que tiene el juego
   function Update() {
-    console.log(parado);
     if (paused) return;
     score += deltaTime;
     const roundedScore = Math.floor(score);
@@ -75,6 +76,7 @@ export const Playnow = () => {
     MoverSuelo();
     DecidirCrearObstaculos();
     MoverObstaculos();
+    verificarColisiones();
 
     if (velY) velY -= gravedad * deltaTime;
   }
@@ -91,17 +93,14 @@ export const Playnow = () => {
     if (isTransitioning) return; // Si hay una transición en curso, salimos de la función
 
     if (event.key === "ArrowRight") {
-      console.log("Tecla derecha presionada");
       startMoving(1);
     } else if (event.key === "ArrowLeft") {
-      console.log("Tecla izquierda presionada");
       startMoving(-1);
     }
   }
 
   function HandleKeyUp(event) {
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
-      console.log("Tecla soltada");
       stopMoving();
     }
   }
@@ -235,7 +234,6 @@ export const Playnow = () => {
         const soundButton = document.getElementById("soundButton"); */
   // Agregarle la opción de poder clicar encima.
   restartButton.addEventListener("click", () => {
-    console.log("init");
     score = 0;
   });
 
@@ -261,19 +259,16 @@ export const Playnow = () => {
   }
   /* Hacer que los botones de pause y sound-on se cambien por
            play y sound-off cuando se hace click sobre ellos */
-  console.log("pause", paused);
   const pauseButton = document.getElementById("pauseButton");
   pauseButton.addEventListener("click", function () {
     if (pauseButton.classList.contains("pauseButton")) {
       pauseButton.classList.remove("pauseButton");
       pauseButton.classList.add("pauseButtonTwo");
       paused = true;
-      console.log("pause click si", paused);
     } else {
       pauseButton.classList.remove("pauseButtonTwo");
       pauseButton.classList.add("pauseButton");
       paused = false;
-      console.log("pause click no", paused);
     }
   });
 
@@ -315,20 +310,59 @@ export const Playnow = () => {
   returnButton.addEventListener("click", function () {
     location.href = "https://aquagout.github.io/AquaGoat/";
   });
-  /* });
- */
-  // mas javascript
-  // mas javascript hecho por SARA.
-  // Crear botones de restart, pause y sonido.
-  /*   const restartButton = document.getElementById("restartButton");
-    const pauseButton = document.getElementById("pauseButton");
-    const soundButton = document.getElementById("soundButton");
 
-    restartButton.addEventListener("click", Init);
-    pauseButton.addEventListener("click", pauseGame);
-    soundButton.addEventListener("click", toggleSound); */
+  /*   verificar Colisiones */
+  /*   verificar Colisiones */
+  /*   verificar Colisiones */
 
-  console.log("Playnow");
+  /* Intalar libreria alertas */
+  /* npm install sweetalert2 */
+
+  function verificarColisiones() {
+    const objetoRect = objeto.getBoundingClientRect();
+    console.log("verificarColisiones");
+
+    const obstaculos = document.querySelectorAll(
+      ".medusa, .pulso, .tiburon"
+    );
+
+    for (const obstaculo of obstaculos) {
+      const obstaculoRect = obstaculo.getBoundingClientRect();
+
+      // Comprueba si hay una colisión entre el objeto y el obstáculo
+      if (
+        objetoRect.left < obstaculoRect.right &&
+        objetoRect.right > obstaculoRect.left &&
+        objetoRect.top < obstaculoRect.bottom &&
+        objetoRect.bottom > obstaculoRect.top
+      ) {
+        /* Lamamos la funcion parar juego */
+        PararJuego();
+        /* mensaje de alerta en caso de colicion */
+        Swal.fire({
+          title: "¡Game Over!",
+          text: "¿Desea volver a jugar o regresar al inicio?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Volver a jugar",
+          cancelButtonText: "Regresar al inicio"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // El usuario desea volver a jugar
+            // Agrega aquí la lógica correspondiente para reiniciar el juego
+          } else {
+            // El usuario desea regresar al inicio
+            // Agrega aquí la lógica correspondiente para redirigir al usuario al inicio
+          }
+        });
+      }
+    }
+  }
+
+  /* PARAR EL JUEGO */
+  function PararJuego() {
+    paused = true;
+  }
 };
 
 /* ejecucion de play now */
