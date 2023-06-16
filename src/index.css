@@ -4,6 +4,32 @@
   src: url("/assets/fonts/Richard_Samuels.otf") format("truetype");
 }
 
+.swal2-popup {
+  height: 600px;
+  width: 700px;
+  font-family: "Richard Samuels";
+  font-size: 25px;
+}
+
+
+.swal2-popup .swal2-styled.swal2-confirm {
+  background-color: #185698 !important;
+  font-family: "Richard Samuels";
+}
+.swal2-popup .swal2-styled.swal2-cancel {
+  background-color: #185698 !important;
+  font-family: "Richard Samuels";
+}
+.swal2-popup .swal2-styled:focus {
+  background-color: #185698 !important;
+  font-family: "Richard Samuels";
+}
+
+.swal2-popup .swal2-actions:not(.swal2-loading) .swal2-styled:hover {
+  background-color: #185698 !important;
+  font-family: "Richard Samuels";
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -278,21 +304,24 @@ body {
   /*  bottom: 1px; */
   left: 600px;
   z-index: 1;
-  background: url("/assets/images/medusaenemigo134px.png") no-repeat;
+  background: url("assets/icons/jellyfish2.png") no-repeat;
   background-position: bottom;
+  background-size: cover;
 }
 
 .pulpo {
-  width: 117px;
-  height: 126px;
-  background: url("/assets/images/pulpoenemigo134px.png") no-repeat;
+  width: 130px;
+  height: 130px;
+  background: url("/assets/icons/octopus2.png") no-repeat;
   background-position: bottom;
+  background-size: cover;
 }
 
 .tiburon {
-  width: 134px;
+  width: 160px;
   height: 108px;
-  background: url("/assets/images/tiburonenemigo134.png") no-repeat;
+  background: url("/assets/icons/shark2.png") no-repeat;
+  background-size: cover;
   background-position: bottom;
 }
 /* stylelint-disable selector-id-pattern */
