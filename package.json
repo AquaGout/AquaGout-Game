@@ -24,6 +24,6 @@
   "keywords": [],
   "license": "ISC",
   "dependencies": {
-    "sweetalert2": "^11.7.12"
+    "sweetalert2": "^11.4.8"
   }
 }
