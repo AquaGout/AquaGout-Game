@@ -8,7 +8,7 @@ export default {
   root: "src",
   base,
   mode,
-  publicDir: "public",
+  publicDir: "../public",
   build: {
     outDir: "../dist",
     assetsDir: "./"
