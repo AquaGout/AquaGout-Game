@@ -51,6 +51,9 @@ export const Playnow = () => {
   const obstaculos = [];
   let score = 0;
   let paused = false;
+  let velX = 0;
+  let objetoMovedX = 480;
+  let objetoMovedY = 0;
 
   /* ---CARGA DE FUNCIONES PRINCIPALES OBJETO -- */
   function Update() {
@@ -65,9 +68,12 @@ export const Playnow = () => {
     MoverObstaculos();
     verificarColisiones();
     RestartBoton();
-    /* vibrarElemento(); */
-
+  
     if (velY) velY -= gravedad * deltaTime;
+  
+    // Actualizar posición del objeto
+    objetoMovedY += velY * deltaTime;
+    objeto.style.top = objetoMovedY + "px";
   }
   /* boton no se esta usando
         const transitionDuration = 0.3;  */ // Duración de la transición en segundos
@@ -85,8 +91,13 @@ export const Playnow = () => {
       startMoving(1);
     } else if (event.key === "ArrowLeft") {
       startMoving(-1);
+    }else if (event.key === "ArrowUp") {
+      startMoving(0, -1);
+    } else if (event.key === "ArrowDown") {
+      startMoving(0, 1);
     }
   }
+  
 
   function HandleKeyUp(event) {
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
@@ -94,40 +105,50 @@ export const Playnow = () => {
     }
   }
 
-  function startMoving(direction) {
+  function startMoving(directionX, directionY) {
     if (isTransitioning) return;
-
+  
     startTime = performance.now();
     previousTime = startTime;
-
+  
     function move(currentTime) {
       const deltaTime = (currentTime - previousTime) / 1000;
       previousTime = currentTime;
-
-      const displacement = velocity * deltaTime * direction;
-      objetoMoved = Math.max(
+  
+      const displacementX = velocity * deltaTime * directionX;
+      const displacementY = velocity * deltaTime * directionY;
+      objetoMovedX = Math.max(
         0,
         Math.min(
-          objetoMoved + displacement,
+          objetoMovedX + displacementX,
           contenedor.clientWidth - objeto.clientWidth
         )
       );
-      objeto.style.left = objetoMoved + "px";
-
+      objetoMovedY = Math.max(
+        0,
+        Math.min(
+          objetoMovedY + displacementY,
+          contenedor.clientHeight - objeto.clientHeight
+        )
+      );
+      objeto.style.left = objetoMovedX + "px";
+      objeto.style.top = objetoMovedY + "px";
+  
       if (
-        objetoMoved <= 0 ||
-              objetoMoved >= contenedor.clientWidth - objeto.clientWidth
+        objetoMovedX <= 0 ||
+        objetoMovedX >= contenedor.clientWidth - objeto.clientWidth ||
+        objetoMovedY <= 0 ||
+        objetoMovedY >= contenedor.clientHeight - objeto.clientHeight
       ) {
         stopMoving();
       } else {
         animationFrameId = requestAnimationFrame(move);
       }
     }
-
+  
     isTransitioning = true;
     animationFrameId = requestAnimationFrame(move);
   }
-
   function stopMoving() {
     if (!isTransitioning) return;
 
