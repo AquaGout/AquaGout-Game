@@ -280,7 +280,7 @@ export const Playnow = () => {
   });
 
   // BOTON AUDIO.
-  const audio = new Audio("/assets/audio/soundtrack.mp3");
+  const audio = new Audio("assets/audio/soundtrack.mp3");
   const soundButton = document.getElementById("soundButton");
   soundButton.addEventListener("click", function () {
     if (soundButton.classList.contains("soundButton")) {
