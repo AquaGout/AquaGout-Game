@@ -1,7 +1,7 @@
 @font-face {
-  src: url("/assets/fonts/Bohemian_Soul.otf") format("truetype");
+  src: url("/AquaGout-Game//assets/fonts/Bohemian_Soul.otf") format("truetype");
   font-family: "Richard Samuels";
-  src: url("/assets/fonts/Richard_Samuels.otf") format("truetype");
+  src: url("/AquaGout-Game//assets/fonts/Richard_Samuels.otf") format("truetype");
 }
 
 .swal2-popup {
@@ -103,7 +103,7 @@ body {
   position: absolute;
   left: -100px;
   width: 950.4px;
-  background-image: url("assets/images/left-rocks.png");
+  background-image: url("/AquaGout-Game/assets/images/left-rocks.png");
   background-position: 0 0;
   transform: translateX(-5%);
   background-repeat: repeat-y 0 / 100%;
@@ -114,7 +114,7 @@ body {
   position: absolute;
   right: -250px;
   width: 950.4px;
-  background-image: url("assets/images/right-rocks.png");
+  background-image: url("/AquaGout-Game/assets/images/right-rocks.png");
   background-position: 0 0;
   transform: translateX(-5%);
   background-repeat: repeat-y 0 / 100%;
@@ -129,7 +129,7 @@ body {
   height: 3140px;
 
   /* Ajusta el ancho al 50% si es necesario */
-  background-image: url("assets/images/left-rocks.png");
+  background-image: url("/AquaGout-Game/assets/images/left-rocks.png");
   background-position: 0 0;
   transform: translateX(-5%);
   background-repeat: repeat-y 0 / 100%;
@@ -145,7 +145,7 @@ body {
   height: 3140px;
 
   /* Ajusta el ancho al 50% si es necesario */
-  background-image: url("assets/images/right-rocks.png");
+  background-image: url("/AquaGout-Game/assets/images/right-rocks.png");
   background-position: 0 0;
   transform: translateX(-5%);
   background-repeat: repeat-y 0 / 100%;
@@ -168,7 +168,7 @@ body {
   margin-left:200px;
   width: 1550px;
   height: 1770px;
-  background-image: url("assets/images/background-fishes.svg");
+  background-image: url("/AquaGout-Game/assets/images/background-fishes.svg");
   transform: translateX(-5%);
   background-repeat: repeat-y 0 / 100%;
   animation: animatedBackground 360000s linear infinite;
@@ -228,7 +228,7 @@ body {
 }
 
 #returnButton {
-  background-image: url("/assets/icons/return.svg");
+  background-image: url("/AquaGout-Game/assets/icons/return.svg");
   background-color: transparent;
   width: 80px;
   height: 80px;
@@ -239,7 +239,7 @@ body {
 }
 
 #restartButton {
-  background-image: url("/assets/icons/restart.svg");
+  background-image: url("/AquaGout-Game/assets/icons/restart.svg");
   background-color: transparent;
   width: 80px;
   height: 80px;
@@ -255,7 +255,7 @@ body {
 }
 
 .pauseButtonTwo {
-  background-image: url("/assets/icons/play.svg") !important;
+  background-image: url("/AquaGout-Game/assets/icons/play.svg") !important;
   background-color: transparent;
   width: 80px;
   height: 80px;
@@ -266,7 +266,7 @@ body {
 }
 
 .pauseButton {
-  background-image: url("/assets/icons/pause.svg");
+  background-image: url("/AquaGout-Game/assets/icons/pause.svg");
   background-color: transparent;
   width: 80px;
   height: 80px;
@@ -277,7 +277,7 @@ body {
 }
 
 .soundButtonTwo {
-  background-image: url("/assets/icons/sound-on.svg");
+  background-image: url("/AquaGout-Game/assets/icons/sound-on.svg");
   background-color: transparent;
   width: 80px;
   height: 80px;
@@ -288,7 +288,7 @@ body {
 }
 
 .soundButton {
-  background-image: url("/assets/icons/sound-off.svg");
+  background-image: url("/AquaGout-Game/assets/icons/sound-off.svg");
   background-color: transparent;
   width: 80px;
   height: 80px;

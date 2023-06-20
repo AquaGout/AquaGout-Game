@@ -3,7 +3,6 @@
 @import url("../../components/Footer/Footer.css");
 @import url("../../components/LandingContent/LandingContent.css");
 @import url("../../components/HowtoPlay/HowtoPlay.css");
-@import url("../../components/Share/Share.css");
 @import url("../../components/PlayNow/PlayNow.css");
 
 /* Fuentes */
@@ -14,10 +13,11 @@
 }
 
 /* Se insertan clases o CSS global */
-* {
-  padding: 0;
+*{
   margin: 0;
+  padding: 0;
   box-sizing: border-box;
+  font-family: "Richard Samuels", sans-serif;
 }
 
 html {
@@ -33,3 +33,4 @@ html {
  */
 
 /* stylelint-disable indentation */
+/* Style the button that is used to open and close the collapsible content */

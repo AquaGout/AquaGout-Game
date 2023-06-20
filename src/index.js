@@ -118,7 +118,7 @@ let gameOver = false;
 let isPaused = false;
 
 const background = new Image();
-background.src = "assets/images/background-fishes.svg";
+background.src = "/AquaGout-Game/assets/images/background-fishes.svg";
 
 // Mouse interactivity
 let canvasPosition = canvas.getBoundingClientRect();
@@ -130,13 +130,13 @@ const mouse = {
 
 // Imágenes
 const leftImg = new Image();
-leftImg.src = "assets/images/left-rocks.png";
+leftImg.src = "/AquaGout-Game/assets/images/left-rocks.png";
 const rightImg = new Image();
-rightImg.src = "assets/images/right-rocks.png";
+rightImg.src = "/AquaGout-Game/assets/images/right-rocks.png";
 
 // Player
 const playerImg = new Image();
-playerImg.src = "assets/icons/swimming-cabriella.png";
+playerImg.src = "/AquaGout-Game/assets/icons/swimming-cabriella.png";
 
 class Player {
   constructor() {
@@ -263,9 +263,9 @@ class Bubble {
 
 const imagesArray = [];
 const imageObjects = [
-  { src: "assets/icons/shark2.png", width: 190, height: 140 },
-  { src: "assets/icons/octopus2.png", width: 130, height: 135 },
-  { src: "assets/icons/jellyfish2.png", width: 110, height: 140 }
+  { src: "/AquaGout-Game/assets/icons/shark2.png", width: 190, height: 140 },
+  { src: "/AquaGout-Game/assets/icons/octopus2.png", width: 130, height: 135 },
+  { src: "/AquaGout-Game/assets/icons/jellyfish2.png", width: 110, height: 140 }
 ];
 
 function togglePause() {
