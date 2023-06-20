@@ -199,7 +199,7 @@ body {
 .score {
   position: absolute;
   margin-bottom: 21em; /* Ajusta la posición vertical del score */
-  left: 10%;
+  left: 17%;
   transform: translateX(-50%);
   z-index: 2;
   font-family: "Richard Samuels", sans-serif;
