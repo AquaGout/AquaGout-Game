@@ -1,283 +1,90 @@
 import Swal from "sweetalert2";
 
-/* ---------FUNCION PRINCIPAL ------ */
-export const Playnow = () => {
-  //* ------LOGICA DE EL JUEGO ------*//
-  let time = new Date();
-  let deltaTime = 0;
+// BOTON RETURN HOME.
+const returnButton = document.getElementById("returnButton");
 
-  // esta funcion nos sirve para que se gargue todo el ecenario antes de comenzar el juego
-  if (
-    document.readyState === "complete" ||
-          document.readyState === "interactive"
-  ) {
-    setTimeout(Init, 1);
-  } else {
-    document.addEventListener("DOMContentLoaded", Init);
-  }
+// BOTON RESTART GAME
+const restartButton = document.getElementById("restartButton");
 
-  /* ------FUNCION DE INICIO ------- */
-  function Init() {
-    time = new Date();
-    Loop();
-    generarPecesFondo();
-  }
+let previousGameState = null; // Crear variable para el juego antes de darle al botón reiniciar.
 
-  /* -----------CICLO DEL JUEGO------------ */
-  function Loop() {
-    deltaTime = (new Date() - time) / 1000;
-    time = new Date();
-    Update();
-    requestAnimationFrame(Loop);
-  }
+function restartGame() {
+  gameOver = false;
+  isPaused = true;
+  player.angle = 0;
+  player.frameX = 0;
+  pauseAnimations() 
 
-  //* * GAME LOGIC **//
 
-  /* -----VARIABLES NECESARIAS ------------ */
-  const suelo = document.querySelector(".espacio");
-  const contenedor = document.querySelector(".contenedor");
-  const objeto = document.querySelector(".objeto");
-  document.addEventListener("keydown", HandleKeyDown);
-  const parado = false;
-  const gravedad = 2500;
-  let sueloX = 0;
-  const velEscenario = 1280 / 3;
-  const gameVel = 1;
-  let velY = 0;
-  let objetoMoved = 480;
-  let tiempoHastaObstaculo = 2;
-  const tiempoObstaculoMin = 0.7;
-  const tiempoObstaculoMax = 1.8;
-  const obstaculos = [];
-  let score = 0;
-  let paused = false;
+  // Almacenar el estado actual del juego
+  previousGameState = {
+    bubbles: [...bubblesArray],
+    images: [...imagesArray],
+    playerX: player.x,
+    playerY: player.y,
+    playerAngle: player.angle,
+    playerFrameX: player.frameX,
+    currentScore: score
+    
+  };
 
-  /* ---CARGA DE FUNCIONES PRINCIPALES OBJETO -- */
-  function Update() {
-    if (paused) return;
-    score += deltaTime;
-    const roundedScore = Math.floor(score);
-    const scoreElement = document.querySelector(".score");
-    scoreElement.textContent = `Score: ${roundedScore}`;
-    if (parado) return;
-    MoverSuelo();
-    DecidirCrearObstaculos();
-    MoverObstaculos();
-    verificarColisiones();
-    RestartBoton();
-    /* vibrarElemento(); */
+  Swal.fire({
+    title: "Do you want to restart the game?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Restart game",
+    cancelButtonText: "Continue game"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // El usuario desea volver a jugar
+      location.reload();
 
-    if (velY) velY -= gravedad * deltaTime;
-  }
-  /* boton no se esta usando
-        const transitionDuration = 0.3;  */ // Duración de la transición en segundos
-  let isTransitioning = false; // Variable de estado para controlar la transición en curso
-  const velocity = 1000; // Velocidad de movimiento en píxeles por segundo, ajusta este valor según tus preferencias
-
-  let startTime = null;
-  let previousTime = null;
-  let animationFrameId = null;
-
-  function HandleKeyDown(event) {
-    if (isTransitioning) return; // Si hay una transición en curso, salimos de la función
-
-    if (event.key === "ArrowRight") {
-      startMoving(1);
-    } else if (event.key === "ArrowLeft") {
-      startMoving(-1);
-    }
-  }
-
-  function HandleKeyUp(event) {
-    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
-      stopMoving();
-    }
-  }
-
-  function startMoving(direction) {
-    if (isTransitioning) return;
-
-    startTime = performance.now();
-    previousTime = startTime;
-
-    function move(currentTime) {
-      const deltaTime = (currentTime - previousTime) / 1000;
-      previousTime = currentTime;
-
-      const displacement = velocity * deltaTime * direction;
-      objetoMoved = Math.max(
-        0,
-        Math.min(
-          objetoMoved + displacement,
-          contenedor.clientWidth - objeto.clientWidth
-        )
-      );
-      objeto.style.left = objetoMoved + "px";
-
-      if (
-        objetoMoved <= 0 ||
-              objetoMoved >= contenedor.clientWidth - objeto.clientWidth
-      ) {
-        stopMoving();
-      } else {
-        animationFrameId = requestAnimationFrame(move);
-      }
-    }
-
-    isTransitioning = true;
-    animationFrameId = requestAnimationFrame(move);
-  }
-
-  function stopMoving() {
-    if (!isTransitioning) return;
-
-    cancelAnimationFrame(animationFrameId);
-    isTransitioning = false;
-  }
-
-  document.addEventListener("keydown", HandleKeyDown);
-  document.addEventListener("keyup", HandleKeyUp);
-
-  // funcion para simular movimiento de las busbujas
-  // la cual es solo una imagen png que se recarga varias
-  // y corre en el eje y para simular movimiento
-  function MoverSuelo() {
-    sueloX += CalcularDesplazamiento();
-    suelo.style.top = -(sueloX % contenedor.clientHeight) + "px";
-  }
-
-  // funcion calcular el desplazamiento de la pantalla o los obstaculos.
-  function CalcularDesplazamiento() {
-    return velEscenario * deltaTime * gameVel;
-  }
-
-  // funcionalidad para determinar cada cuanto tiempo aparecen los obstaculos es rambom
-  function DecidirCrearObstaculos() {
-    tiempoHastaObstaculo -= deltaTime;
-    if (tiempoHastaObstaculo <= 0) {
-      CrearObstaculo();
-    }
-  }
-  // funcion para crear obstaculso radomn si nececida de estarlos creando uno por uno
-  // se pueden crean tantos obstaculos como sena necesarios
-  function CrearObstaculo() {
-    const obstaculo = document.createElement("div");
-    contenedor.appendChild(obstaculo);
-    obstaculo.classList.add("medusa");
-    if (Math.random() > 0.5) obstaculo.classList.add("pulpo");
-    else if (Math.random() < 0.5) obstaculo.classList.add("tiburon");
-    obstaculo.posY = contenedor.clientHeight;
-    obstaculo.style.top = contenedor.clientHeight + "px";
-
-    const randomDirection = Math.random() * 2 - 1; // Número aleatorio entre -1 y 1
-    obstaculo.velocidadX = randomDirection * 200; // Ajusta la velocidad horizontal
-
-    const initialPosition = randomDirection < 0 ? 750 : 250; // Posición inicial según la dirección
-    obstaculo.style.left = initialPosition + "px";
-
-    obstaculos.push(obstaculo);
-    tiempoHastaObstaculo =
-            tiempoObstaculoMin +
-            (Math.random() * (tiempoObstaculoMax - tiempoObstaculoMin)) / gameVel;
-  }
-
-  // funcionalidad para que los obstaculos aparencan en distintas posisines de la pantalla es rambon
-  // por ahora solo tiene tres movimientos 250px, 480px 750px se pueden cear mas.
-  function getRandomLeft() {
-    const randomNumber = Math.floor(Math.random() * 3); // Genera un número aleatorio entre 0 y 2
-
-    if (randomNumber === 0) {
-      return 250;
-    } else if (randomNumber === 1) {
-      return 500;
     } else {
-      return 750;
+      // Continuar el juego
+      isPaused = false;
+      resumeAnimations();
+      animate();
+      // Iniciar el bucle del juego
     }
-  }
-  // funcionalidad que permite que los obstaculos se puevan hacia arriba simulando desplazamiento de la pantalla
-  // la velocidad es paralela a la pantalla y puede ser modificable
-  // funcionalidad que permite que los obstaculos se puevan hacia arriba simulando desplazamiento de la pantalla
-  // la velocidad es paralela a la pantalla y puede ser modificable
-
-  function MoverObstaculos() {
-    for (let i = obstaculos.length - 1; i >= 0; i--) {
-      if (obstaculos[i].posY < -obstaculos[i].clientHeight) {
-        obstaculos[i].parentNode.removeChild(obstaculos[i]);
-        obstaculos.splice(i, 1);
-        /* GanarPuntos(); */
-      } else {
-        obstaculos[i].posY -= CalcularDesplazamiento();
-        obstaculos[i].style.top = obstaculos[i].posY + "px";
-        obstaculos[i].style.left =
-                parseFloat(obstaculos[i].style.left) +
-                obstaculos[i].velocidadX * deltaTime +
-                "px";
-      }
-    }
-  }
-
-  // mas javascript hecho por SARA.
-
-  /*       estan declaradas pero no se utilizan por ahora genera error
-        pauseButton.addEventListener("click", pauseGame);
-        soundButton.addEventListener("click", toggleSound); */
-
-  /*       function restartGame() {
-
-        } */
-
-  function generarPecesFondo() {
-    const cantidadPeces = 25;
-    const contenedor = document.getElementById("contenedor");
-    for (let i = 0; i < cantidadPeces; i++) {
-      const pez = document.createElement("div");
-      pez.classList.add("fish");
-      pez.style.left = getRandomLeft() + "px"; // Utiliza getRandomLeft() para obtener una posición aleatoria
-      /* hay un error aqui / / pez.style.top = getRandomTop() + "px"; */ // Utiliza getRandomTop() para obtener una posición aleatoria
-
-      contenedor.appendChild(pez);
-    }
-  }
-
-  /* ----------BOTONES -------------- */
-
-  // BOTON RESTART.
-  function RestartBoton() {
-    const restartButton = document.getElementById("restartButton");
-    restartButton.addEventListener("click", () => {
-      paused = true;
-      Swal.fire({
-        title: "¡El Juego se Reiniciara!",
-        text: "¿Reiniciar Juego?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Reiniciar Juego",
-        cancelButtonText: "Continuar juego"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // El usuario desea volver a jugar
-          location.reload();
-        } else {
-          // Continuar el juego
-          paused = false;
-        }
-      });
-    });
-  }
-
-  // BOTON PAUSE.
-  const pauseButton = document.getElementById("pauseButton");
-  pauseButton.addEventListener("click", function () {
-    if (pauseButton.classList.contains("pauseButton")) {
-      pauseButton.classList.remove("pauseButton");
-      pauseButton.classList.add("pauseButtonTwo");
-      paused = true;
-    } else {
-      pauseButton.classList.remove("pauseButtonTwo");
-      pauseButton.classList.add("pauseButton");
-      paused = false;
+    if (previousGameState) {
+      bubblesArray = [...previousGameState.bubbles];
+      imagesArray = [...previousGameState.images];
+      player.angle = previousGameState.playerAngle;
+      player.frameX = previousGameState.playerFrameX;
+      score = previousGameState.currentScore;
+      scoreElement.textContent = "Bubble Pop Points: " + score;
     }
   });
+};
+
+function gameLoop() {
+  if (!isPaused) {
+    clearCanvas();
+    handleBubbles();
+    handleImages();
+    handlePlayer();
+    handleScore();
+    gameFrame++;
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+restartButton.addEventListener("click", restartGame);
+
+window.addEventListener("DOMContentLoaded", () => {
+  if (previousGameState) {
+    isPaused = false;
+    player.x = previousGameState.playerX;
+    player.y = previousGameState.playerY;
+    player.angle = previousGameState.playerAngle;
+    player.frameX = previousGameState.playerFrameX;
+    score = previousGameState.currentScore;
+    scoreElement.textContent = "Score: " + score;
+    gameLoop();
+  }
+});
+//BOTON AUDIO
 
   // BOTON AUDIO.
   const audio = new Audio("/AquaGout-Game/assets/audio/soundtrack.mp3");
@@ -294,89 +101,548 @@ export const Playnow = () => {
     }
   });
 
-  // BOTON RETURN HOME.
-  const returnButton = document.getElementById("returnButton");
 
-  returnButton.addEventListener("click", function () {
-    location.href = "https://aquagout.github.io/AquaGoat/";
-  });
+// Enlazamos Score
+returnButton.addEventListener("click", function () {
+  location.href = "https://aquagout.github.io/AquaGoat/";
+});
 
-  /* ----------FIN BOTONES -------------- */
+const scoreElement = document.querySelector(".score");
+const canvas = document.getElementById("canvas1");
+const ctx = canvas.getContext("2d");
+canvas.width = 1350;
+canvas.height = 1670;
+let score = 0;
+let gameFrame = 0;
+let gameOver = false;
+let isPaused = false;
 
-  /* ------HAME OVER FUNCION ------------ */
+const background = new Image();
+background.src = "assets/images/background-fishes.svg";
 
-  /* Intalar libreria alertas */
-  /* npm install sweetalert2 */
+// Mouse interactivity
+let canvasPosition = canvas.getBoundingClientRect();
+const mouse = {
+  x: canvas.width / 2,
+  y: canvas.height / 2,
+  click: false
+};
 
-  function verificarColisiones() {
-    const objetoRect = objeto.getBoundingClientRect();
-    console.log("verificarColisiones");
+// Imágenes
+const leftImg = new Image();
+leftImg.src = "assets/images/left-rocks.png";
+const rightImg = new Image();
+rightImg.src = "assets/images/right-rocks.png";
 
-    const obstaculos = document.querySelectorAll(
-      ".medusa, .pulso, .tiburon"
+// Player
+const playerImg = new Image();
+playerImg.src = "assets/icons/swimming-cabriella.png";
+
+class Player {
+  constructor() {
+    this.x = canvas.width / 2;
+    this.y = canvas.height / 10;
+    this.radius = 60;
+    this.angle = 0;
+    this.frameX = 0;
+    this.frameY = 0;
+    this.frame = 0;
+    this.maxY = canvas.height * 0.95;
+    this.spriteWidth = 6500;
+    this.spriteHeight = 500;
+    
+  }
+
+  update() {
+    const dx = this.x - mouse.x;
+    const dy = this.y - mouse.y;
+    if (mouse.x != this.x) {
+      this.x -= dx / 20;
+      this.moving = true;
+    }
+    if (mouse.y != this.y) {
+      this.y -= dy / 20;
+      this.moving = true;
+    }
+    if (this.x < 0) this.x = 0;
+    if (this.x > canvas.width) this.x = canvas.width;
+    if (this.y < 50) this.y = 50;
+    if (this.y > canvas.height) this.y = canvas.height;
+    if (this.y > this.maxY) this.y = this.maxY;
+    const theta = Math.atan2(dy, dx);
+    this.angle = theta;
+    if (this.checkCollision()) {
+      gameOver = true;
+      
+    }
+  }
+
+  draw() {
+    ctx.fillStyle = "black";
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+    ctx.drawImage(
+      playerImg,
+      this.frameX * this.spriteWidth,
+      this.frameY * this.spriteHeight,
+      this.spriteWidth,
+      this.spriteHeight,
+      0 - 60,
+      0 - 45,
+      this.spriteWidth * 0.7,
+      this.spriteHeight * 0.7
     );
+    ctx.restore();
+  };
 
-    for (const obstaculo of obstaculos) {
-      const obstaculoRect = obstaculo.getBoundingClientRect();
+  checkCollision() {
+    for (let i = 0; i < imagesArray.length; i++) {
+      const image = imagesArray[i];
+      const dx = this.x - image.x;
+      const dy = this.y - image.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < this.radius + image.width / 2) {
+        gameOver = true;
+         // Establecer gameOver a true si se produce una colisión
+      }
+    }
 
-      // Comprueba si hay una colisión entre el objeto y el obstáculo
-      if (
-        objetoRect.left < obstaculoRect.right &&
-        objetoRect.right > obstaculoRect.left &&
-        objetoRect.top < obstaculoRect.bottom &&
-        objetoRect.bottom > obstaculoRect.top
-      ) {
-        /* Lamamos la funcion parar juego */
-        PararJuego();
-        /* mensaje de alerta en caso de colicion */
-        vibrarRapido();
-        Swal.fire({
-          title: "¡Game Over!",
-          text: "¿Desea volver a jugar o regresar al inicio?",
-          icon: "error",
-          showCancelButton: true,
-          confirmButtonText: "Volver a jugar",
-          cancelButtonText: "Regresar al inicio"
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // El usuario desea volver a jugar
-            location.reload();
-          } else {
-            // El usuario desea regresar al inicio
-            location.href = "https://aquagout.github.io/AquaGoat/";
-          }
-        });
+    return false; // No se ha producido ninguna colisión
+  }
+}
+
+const player = new Player();
+
+// Bubbles
+const bubblesArray = [];
+const bubble = new Image();
+bubble.src = "https://i.ibb.co/ZX3thkw/pop2.png";
+class Bubble {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height;
+    this.radius = 80;
+    this.speed = 3; // Cambia el valor inicial de "this.speed" a un valor positivo
+    this.distance;
+    this.sound = Math.random() <= 0.5 ? "sound1" : "sound2";
+    this.counted = false;
+    this.frameX = 0;
+    this.spriteWidth = 91;
+    this.spriteHeight = 91;
+    this.pop = false;
+    this.counted = false;
+  }
+
+  update() {
+    this.y -= this.speed;
+
+    const dx = this.x - player.x;
+    const dy = this.y - player.y;
+    this.distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (this.distance < this.radius + player.radius) {
+      popAndRemove(this);
+    }
+  }
+
+  draw() {
+    ctx.drawImage(
+      bubble,
+      this.frameX * this.spriteWidth,
+      0,
+      this.spriteWidth,
+      this.spriteHeight,
+      this.x - this.spriteWidth * 0.375,
+      this.y - this.spriteHeight * 0.375,
+      this.spriteWidth * 0.75,
+      this.spriteHeight * 0.75
+    );
+  }
+}
+
+const imagesArray = [];
+const imageObjects = [
+  { src: "assets/icons/shark2.png", width: 190, height: 140 },
+  { src: "assets/icons/octopus2.png", width: 130, height: 135 },
+  { src: "assets/icons/jellyfish2.png", width: 110, height: 140 }
+];
+
+function togglePause() {
+  isPaused = !isPaused;
+  if (!gameOver) {
+    if (isPaused) {
+      pauseButton.classList.remove("pauseButton");
+      pauseButton.classList.add("pauseButtonTwo");  
+      pauseAnimations()  } else {
+        pauseButton.classList.remove("pauseButtonTwo");
+        pauseButton.classList.add("pauseButton");      resumeAnimations()
+        animate();
+    }
+  }
+}
+
+const pauseButton = document.getElementById("pauseButton");
+pauseButton.addEventListener("click", togglePause);
+
+let gameOverModal = false;
+class ImageObject {
+  constructor() {
+    const imageIndex = Math.floor(Math.random() * imageObjects.length);
+    const imageObject = imageObjects[imageIndex];
+    this.image = new Image();
+    this.image.onload = () => {
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height;
+      this.width = imageObject.width;
+      this.height = imageObject.height;
+      this.speed = 4;
+      this.distance;
+      this.angle = Math.atan2(this.y - player.y, this.x - player.x); // Calcula el ángulo entre la imagen y el jugador
+      1; // Dirección vertical hacia arriba
+      
+    };
+    this.image.src = imageObject.src;
+  }
+
+  update() {
+    if (isPaused) {
+
+      return;// Si el juego está en pausa, no realizar actualizaciones
+    }
+
+    this.y -= this.speed;
+
+    const dx = Math.cos(this.angle) * this.speed; // Componente horizontal del movimiento diagonal
+    const dy = Math.sin(this.angle) * this.speed; // Componente vertical del movimiento diagonal
+
+    this.x -= dx;
+    this.y -= dy;
+
+    const distanceX = this.x - player.x;
+    const distanceY = this.y - player.y;
+    this.distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+    if (this.distance < this.width / 2 + player.radius) {
+      gameOver = true;
+      showGameOverModal();
+pauseAnimations();
+
+    }
+  }
+
+  
+  draw() {
+    // Dibuja la imagen en el lienzo con el tamaño especificado
+    ctx.drawImage(
+      this.image,
+      this.x - this.width / 2,
+      this.y - this.height / 2,
+      this.width,
+      this.height
+      );
+    }
+  }
+  
+  function pauseAnimations() {
+  const animatedElements = document.querySelectorAll("*");
+
+  animatedElements.forEach((element) => {
+    const computedStyle = window.getComputedStyle(element);
+    const animationName = computedStyle.animationName;
+
+    if (animationName !== "none") {
+      element.style.animationPlayState = "paused";
+    }
+  });
+}
+  
+function resumeAnimations() {
+  const animatedElements = document.querySelectorAll("*");
+
+  animatedElements.forEach((element) => {
+    const computedStyle = window.getComputedStyle(element);
+    const animationName = computedStyle.animationName;
+
+    if (animationName !== "none") {
+      element.style.animationPlayState = "running";
+    }
+  });
+}
+
+function handleBubbles() {
+  for (let i = 0; i < bubblesArray.length; i++) {
+    if (bubblesArray[i].y > canvas.height * 2) {
+      bubblesArray.splice(i, 1);
+    }
+
+    if (
+      bubblesArray[i].distance < bubblesArray[i].radius + player.radius
+    ) {
+      popAndRemove(i);
+    }
+
+  }
+  for (let i = 0; i < bubblesArray.length; i++) {
+    bubblesArray[i].update();
+    bubblesArray[i].draw();
+  }
+  if (gameFrame % 50 == 0) {
+    bubblesArray.push(new Bubble());
+  }
+  for (let i = 0; i < imagesArray.length; i++) {
+    if (imagesArray[i].y > canvas.height * 2) {
+      imagesArray.splice(i, 1);
+    }
+
+    if (imagesArray[i].distance < imagesArray[i].radius + player.radius) {
+    }
+  }
+
+  for (let i = 0; i < imagesArray.length; i++) {
+    imagesArray[i].update();
+    imagesArray[i].draw();
+  }
+
+  if (gameFrame % 100 === 0) {
+    imagesArray.push(new ImageObject());
+  }
+}
+function popAndRemove(i) {
+  if (!bubblesArray[i]) return;
+  if (bubblesArray[i]) {
+    if (!bubblesArray[i].counted) {
+      score++;
+      bubblesArray[i].counted = true;
+      const roundedScore = Math.floor(score);
+      scoreElement.textContent = `Bubble Pop Points: ${roundedScore}`;
+    }
+    bubblesArray[i].frameX++;
+    if (bubblesArray[i].frameX > 7) bubblesArray[i].pop = true;
+    if (bubblesArray[i].pop) bubblesArray.splice(i, 1);
+  }
+}
+
+const bubbleTextArray = [];
+const textCoordinates = ctx.getImageData(0, 0, 100, 100);
+
+class Particle2 {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = 7;
+    this.baseX = this.x;
+    this.baseY = this.y;
+    this.density = (Math.random() * 15) + 1;
+    this.distance;
+  }
+
+  update() {
+    const dx = player.x - this.x;
+    const dy = player.y - this.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    this.distance = distance;
+    const forceDirectionX = dx / distance;
+    const forceDirectionY = dy / distance;
+    const maxDistance = 100;
+    const force = (maxDistance - distance) / maxDistance;
+    const directionX = forceDirectionX * force * this.density;
+    const directionY = forceDirectionY * force * this.density;
+
+    if (distance < 100) {
+      this.x -= directionX;
+      this.y -= directionY;
+    } else {
+      if (this.x !== this.baseX) {
+        const dx = this.x - this.baseX;
+        this.x -= dx / 20;
+      }
+      if (this.y !== this.baseY) {
+        const dy = this.y - this.baseY;
+        this.y -= dy / 20;
       }
     }
   }
-  /* ------FIN GAME OVER FUNCION ------------ */
+}
 
-  /* --------- FUNCION VIBRAR----------- */
-  /*   function vibrarElemento() {
-    if ("vibrate" in navigator) {
-      objeto.style.animation = "vibration 1s infinite";
-    } else {
-      console.log("El dispositivo no soporta la vibración.");
-    }
-  }
- */
-  function vibrarRapido() {
-    // Verificar si el navegador es compatible con la API de Vibración
-    if ("vibrate" in navigator) {
-      // Hacer que el elemento vibre con un patrón de vibración más rápido
-      objeto.style.animation = "vibration 0.2s infinite";
-    } else {
-      console.log("El dispositivo no soporta la vibración.");
-    }
+
+// animation loop
+function animate() {
+  if (gameOver || isPaused) {
+
+    return ;
+    
   }
 
-  /* PARAR EL JUEGO */
-  function PararJuego() {
-    paused = true;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el lienzo
+  for (let i = 0; i < bubbleTextArray.length; i++) {
+    bubbleTextArray[i].draw();
+    bubbleTextArray[i].update();
   }
+
+  handleBubbles();
+  player.update();
+  player.draw();
+  gameFrame += 1;
+  requestAnimationFrame(animate);
+}
+function showGameOverModal() {
+  Swal.fire({
+    title: "Game Over!",
+    text: "Would you like to play again or come back to home page?",
+    icon: "error",
+    showCancelButton: true,
+    confirmButtonText: "Play again",
+    cancelButtonText: "Home page"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // El usuario desea volver a jugar
+      location.reload();
+    } else {
+      // El usuario desea regresar al inicio
+      location.href = "https://aquagout.github.io/AquaGoat/";
+    }
+  });
+}
+
+animate();
+
+window.addEventListener("resize", function () {
+  canvasPosition = canvas.getBoundingClientRect();
+  mouse.x = canvas.width / 2;
+  mouse.y = canvas.height / 2;
+});
+
+// Keyboard interactivity
+const keys = [];
+window.addEventListener("keydown", function (e) {
+  keys[e.key] = true;
+});
+
+window.addEventListener("keyup", function (e) {
+  delete keys[e.key];
+});
+
+// Player movement
+const playerSpeed = 7;
+
+
+
+function handlePlayerMovement() {
+  if (keys.ArrowUp || keys.Up) {
+    player.y -= playerSpeed;
+  }
+  if (keys.ArrowDown || keys.Down) {
+    player.y += playerSpeed;
+  }
+  if (keys.ArrowLeft || keys.Left) {
+    player.x -= playerSpeed;
+  }
+  if (keys.ArrowRight || keys.Right) {
+    player.x += playerSpeed;
+  }
+
+  // Limit player movement within the canvas
+  if (player.x < 0) player.x = 0;
+  if (player.x > canvas.width) player.x = canvas.width;
+  if (player.y < 50) player.y = 50;
+  if (player.y > canvas.height) player.y = canvas.height;
+}
+
+// Capturar el evento de teclado
+document.addEventListener("keydown", function (event) {
+  // Obtener el código de la tecla presionada
+  const keyCode = event.keyCode || event.which;
+
+  // Deshabilitar el desplazamiento de la página
+  if (keyCode >= 37 && keyCode <= 40) {
+    event.preventDefault();
+  }
+});
+
+// Update player function
+Player.prototype.update = function () {
+  handlePlayerMovement();
+
+  const dx = this.x - player.x;
+  const dy = this.y - player.y;
+  if (player.x != this.x) {
+    this.x -= dx / 20;
+    this.moving = true;
+  }
+  if (player.y != this.y) {
+    this.y -= dy / 20;
+    this.moving = true;
+  }
+  if (this.x < this.radius) this.x = this.radius;
+  if (this.x > canvas.width - this.radius) this.x = canvas.width - this.radius;
+  if (this.y < this.radius) this.y = this.radius;
+  if (this.y > canvas.height - this.radius) this.y = canvas.height - this.radius;
+
+  const theta = Math.atan2(dy, dx);
+  this.angle = theta;
+  
 };
 
-/* ejecucion de play now */
-/* ejecucion de play now */
-Playnow();
-console.log("ejecucion");
+// Replace the existing mouse event listeners
+canvas.removeEventListener("mousemove");
+window.removeEventListener("mouseup");
+
+// Update the player's update function
+canvas.addEventListener("mousemove", function (e) {
+  mouse.click = true;
+  mouse.x = e.x - canvasPosition.left;
+  mouse.y = e.y - canvasPosition.top;
+  player.update();
+});
+
+// Remove the existing mouse click condition from the player's draw function
+if (mouse.click) {
+  // ...
+}
+
+
+// Start the animation loop
+animate();
+
+
+
+const leftSideImages = document.querySelectorAll(".left-side");
+const initialTop = parseInt(window.getComputedStyle(leftSideImages[0]).top);
+
+leftSideImages.forEach(function (image, index) {
+  image.addEventListener("animationiteration", function () {
+    const imageTop = initialTop - (index + 10) * 10;
+    image.style.top = imageTop + "px";
+  });
+});
+
+//   /* ----------FIN BOTONES -------------- */
+
+
+//   /* ------FIN GAME OVER FUNCION ------------ */
+
+//   /* --------- FUNCION VIBRAR----------- */
+//   /*   function vibrarElemento() {
+//     if ("vibrate" in navigator) {
+//       objeto.style.animation = "vibration 1s infinite";
+//     } else {
+//       console.log("El dispositivo no soporta la vibración.");
+//     }
+//   }
+//  */
+//   function vibrarRapido() {
+//     // Verificar si el navegador es compatible con la API de Vibración
+//     if ("vibrate" in navigator) {
+//       // Hacer que el elemento vibre con un patrón de vibración más rápido
+//       objeto.style.animation = "vibration 0.2s infinite";
+//     } else {
+//       console.log("El dispositivo no soporta la vibración.");
+//     }
+//   }
+
+//   /* PARAR EL JUEGO */
+//   function PararJuego() {
+//     paused = true;
+//   }
